@@ -1,0 +1,1 @@
+#pragma comment (lib,"Debug_Toolset.lib")
