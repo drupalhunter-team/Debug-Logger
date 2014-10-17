@@ -1,4 +1,6 @@
-/*The MIT License (MIT)
+/*
+v1.1.0
+The MIT License (MIT)
 
 Copyright (c) <2014> <Josh S, Cooper>
 
@@ -35,8 +37,13 @@ THE SOFTWARE.*/
 #include <thread>
 #include <functional>
 
+#ifndef LOG_MAX_LEVEL
+	#define LOG_MAX_LEVEL (dbg::logFATAL + dbg::logERROR + dbg::logWARNING + dbg::logINFO + dbg::logDEBUG1 + dbg::logDEBUG2 + dbg::logDEBUG3 + dbg::logDEBUG4 )
+#endif
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 	#include <windows.h>
+	//#include <stdio.h>
 /*
 Function for grabbing the timestamps
 Windows Version
@@ -50,8 +57,12 @@ Windows Version
 			return "Error in NowTime()";
 
 		char result[100] = { 0 };
+		//std::string result = "";
 		static DWORD first = GetTickCount();
-		std::sprintf(result, "%s.%03ld", buffer, (long)(GetTickCount() - first) % 1000);
+		/*result += buffer;
+		result += ".";
+		result += (long)first;*/
+		std::sprintf(result, "%s.%03ld", buffer, ((long)(GetTickCount() - first) % 1000));
 		return result;
 	}
 
@@ -77,7 +88,7 @@ Windows Version
 namespace dbg
 {
 	//Enums representing the different log levels
-	// Implemented as bits in a Byte as to facilitate turning specific levels on and off
+	// Implemented as bits in a Byte as to facilitate turning specific levels on and off with a #define macro
 	enum LogLevel 
 	{ 
 		logFATAL = 1 << 0,			logERROR = 1 << 1, 
@@ -95,11 +106,14 @@ namespace dbg
 	Implemented with a built-in Object of the OutputPolicy class
 	Logger expects very little of this Policy class itself as its methods' only use of the
 	Output Object are where it is being overwritten with a new OutputPolicy object
+
+	REQUIRED are an operator= overload + copy constructor
 	*/
 	template <typename OutputPolicy>
 	class Logger
 	{
 		friend FileLog_Mgr;
+
 		public:
 			virtual ~Logger()
 			{
@@ -166,7 +180,7 @@ namespace dbg
 
 		protected:
 			std::ostringstream buffer;
-			OutputPolicy Output;
+			OutputPolicy Output;  //templated output
 	};
 
 	/*
@@ -195,15 +209,29 @@ namespace dbg
 			inline std::ofstream& Stream()
 			{
 				if ( !file_stream.is_open() )
-					file_stream.open(file_name, std::ofstream::out);// | std::ofstream::app
+				{
+					if ( app )
+					{
+						file_stream.open(file_name, std::ofstream::out | std::ofstream::app);
+					}
+					else
+					{
+						file_stream.open(file_name, std::ofstream::out);
+					}
+				}
 				return file_stream;
 			}
 			inline std::wstring& FileName()
 			{
 				return file_name;
 			}
+			inline void set_append(bool append)
+			{
+				app = append;
+			}
 
 		protected:
+			bool app = false;
 			std::ofstream file_stream;
 			std::wstring file_name;
 	};
@@ -218,7 +246,7 @@ namespace dbg
 			{
 				try
 				{
-					return Logs[index].Get(level);
+					return getLogs()[index].Get(level);
 				}
 				catch ( int exception )
 				{
@@ -226,26 +254,60 @@ namespace dbg
 					exit(-404);
 				}
 			}
-			static void RegisterNewLog(std::wstring file_name)
+			static int RegisterNewLog(std::wstring file_name, bool append = false)
 			{
 				if ( !ThreadRunning )
 				{
+					for ( int i = 0; i < getLogs().size(); ++i )
+					{
+						if ( getLogs()[i].Output.FileName() == file_name )
+							return -2;
+					}
 					FileLog newLog;
+					newLog.Output.set_append(append);
 					newLog.Output.FileName() = file_name;
-					Logs.push_back(newLog);
+					getLogs().push_back(newLog);
+					return getLogs().size() - 1;
 				}
+				else
+				{
+					Stop();
+					if ( !ThreadRunning )
+					{
+						for ( int i = 0; i < getLogs().size(); ++i )
+						{
+							if ( getLogs()[i].Output.FileName() == file_name )
+								return -2;
+						}
+						FileLog newLog;
+						newLog.Output.set_append(append);
+						newLog.Output.FileName() = file_name;
+						getLogs().push_back(newLog);
+						return getLogs().size() - 1;
+						Start();
+					}
+					else
+					{
+						return -1;
+					}
+				}
+			}
+			static void set_LogReportingLevel(int log_index, LogLevel reportLevel)
+			{
+				if ( log_index >= 0 && log_index < getLogs().size() )
+					getLogs()[log_index].ReportingLevel() = reportLevel;
 			}
 			static bool CheckIndex(int index)
 			{
-				if ( index >= 0 && index < Logs.size() )
+				if ( index >= 0 && index < getLogs().size() )
 					return true;
 				return false;
 			}
 			static bool macroCheck(int index, LogLevel level)
 			{
-				if ( index >= 0 && index < Logs.size() )
+				if ( index >= 0 && index < getLogs().size() )
 				{
-					if ( level > Logs[index].ReportingLevel() || !Logs[index].Output.Stream() )
+					if ( level > getLogs()[index].ReportingLevel() || !getLogs()[index].Output.Stream() )
 						return false;
 					return true;
 				}
@@ -258,7 +320,7 @@ namespace dbg
 
 				ThreadRunning = true;
 				WtL_Thread = std::thread(&FileLog_Mgr::WriteToLogs);
-				std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+				std::this_thread::sleep_for(std::chrono::milliseconds(StartDelay));
 				return true;
 			}
 			static bool Stop()
@@ -273,7 +335,11 @@ namespace dbg
 			}
 
 		protected:
-			static std::vector<FileLog> Logs;
+			static std::vector<FileLog>& getLogs()
+			{
+				static std::vector<FileLog> Logs;
+				return Logs;
+			}
 
 		private:
 			virtual ~FileLog_Mgr()
@@ -281,34 +347,37 @@ namespace dbg
 				Stop();
 			}
 			static bool ThreadRunning;
+			static int WriteInterval;
+			static int StartDelay;
+			static std::thread WtL_Thread;
+
 			static void WriteToLogs()
 			{
 				while ( ThreadRunning )
 				{
-					for ( int i = 0; i < Logs.size(); ++i )
+					for ( int i = 0; i < getLogs().size(); ++i )
 					{
-						Logs[i].Output.Stream() << Logs[i].buffer.str();
-						Logs[i].buffer.str("");
-						Logs[i].Output.Stream().flush();
+						getLogs()[i].Output.Stream() << getLogs()[i].buffer.str();
+						getLogs()[i].buffer.str("");
+						getLogs()[i].Output.Stream().flush();
 					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+					std::this_thread::sleep_for(std::chrono::milliseconds(WriteInterval));
 				}
 
 				//There might be buffered data
-				for ( int i = 0; i < Logs.size(); ++i )
+				for ( int i = 0; i < getLogs().size(); ++i )
 				{
-					Logs[i].Output.Stream() << Logs[i].buffer.str();
-					Logs[i].buffer.str("");
-					Logs[i].Output.Stream().flush();
+					getLogs()[i].Output.Stream() << getLogs()[i].buffer.str();
+					getLogs()[i].buffer.str("");
+					getLogs()[i].Output.Stream().flush();
 				}
 			}
-			static std::thread WtL_Thread;
 	};
 }
 
-#ifndef LOG_MAX_LEVEL
-#define LOG_MAX_LEVEL (dbg::logFATAL + dbg::logERROR + dbg::logINFO + dbg::logDEBUG1 + dbg::logDEBUG2 + dbg::logDEBUG3 )
-#endif
+#define LOGFILEX(index, level) \
+	if ( level & ~LOG_MAX_LEVEL || !dbg::FileLog_Mgr::macroCheck(index, level) ); \
+	else dbg::FileLog_Mgr::Get(index, level)
 
 #define LOGFILE1(level) \
 	if ( level & ~LOG_MAX_LEVEL || !dbg::FileLog_Mgr::macroCheck(0, level) ); \
