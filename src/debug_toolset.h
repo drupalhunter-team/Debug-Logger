@@ -242,6 +242,9 @@ namespace dbg
 	class FileLog_Mgr
 	{
 		public:
+			static int WriteInterval;
+			static int StartDelay;
+
 			static std::ostringstream& Get(int index, LogLevel level)
 			{
 				try
@@ -347,8 +350,6 @@ namespace dbg
 				Stop();
 			}
 			static bool ThreadRunning;
-			static int WriteInterval;
-			static int StartDelay;
 			static std::thread WtL_Thread;
 
 			static void WriteToLogs()
