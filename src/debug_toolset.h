@@ -198,10 +198,12 @@ namespace dbg
 			FileStream_Policy(){};
 			FileStream_Policy(const FileStream_Policy& other)
 			{
+				app = other.app;
 				file_name = other.file_name;
 			}
 			FileStream_Policy& operator=(const FileStream_Policy& other)
 			{
+				app = other.app;
 				file_name = other.file_name;
 				return *this;
 			}
