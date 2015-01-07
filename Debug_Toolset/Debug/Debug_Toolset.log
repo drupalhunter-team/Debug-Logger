@@ -1,13 +1,11 @@
-﻿Build started 12/08/2014 3:07:32 PM.
-     1>Project "C:\src\2014\console\Debug_Toolset\Debug_Toolset\Debug_Toolset.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W0 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\debug_toolset.cpp
-         debug_toolset.cpp
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\src\2014\console\Debug_Toolset\\bin\Debug\Lib Compile.lib" /NOLOGO Debug\debug_toolset.obj
-         Debug_Toolset.vcxproj -> C:\src\2014\console\Debug_Toolset\\bin\Debug\Lib Compile.lib
-     1>Done Building Project "C:\src\2014\console\Debug_Toolset\Debug_Toolset\Debug_Toolset.vcxproj" (Build target(s)).
+﻿Build started 1/7/2015 4:44:31 PM.
+     1>Project "C:\src\2014\Debug-Logger\Debug_Toolset\Debug_Toolset.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(364,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+     1>Lib:
+         C:\VS2013\VC\bin\Lib.exe /OUT:"..\..\..\Libraries\$lib\logtools.lib" /NOLOGO Debug\logtools.obj
+         Debug_Toolset.vcxproj -> C:\src\2014\Debug-Logger\Debug_Toolset\..\..\..\Libraries\$lib\logtools.lib
+     1>Done Building Project "C:\src\2014\Debug-Logger\Debug_Toolset\Debug_Toolset.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.05
+Time Elapsed 00:00:01.55

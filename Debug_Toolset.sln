@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Debug_Toolset", "Debug_Toolset\Debug_Toolset.vcxproj", "{A4F38B7F-82CB-479C-A406-FB969AD7D1F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lib Compile", "Debug_Toolset\Debug_Toolset.vcxproj", "{A4F38B7F-82CB-479C-A406-FB969AD7D1F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{26CB064D-F453-4933-AB7A-49EE5779E04F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A4F38B7F-82CB-479C-A406-FB969AD7D1F7}.Debug|Win32.Build.0 = Debug|Win32
 		{A4F38B7F-82CB-479C-A406-FB969AD7D1F7}.Release|Win32.ActiveCfg = Release|Win32
 		{A4F38B7F-82CB-479C-A406-FB969AD7D1F7}.Release|Win32.Build.0 = Release|Win32
+		{26CB064D-F453-4933-AB7A-49EE5779E04F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{26CB064D-F453-4933-AB7A-49EE5779E04F}.Debug|Win32.Build.0 = Debug|Win32
+		{26CB064D-F453-4933-AB7A-49EE5779E04F}.Release|Win32.ActiveCfg = Release|Win32
+		{26CB064D-F453-4933-AB7A-49EE5779E04F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
