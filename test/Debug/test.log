@@ -1,14 +1,13 @@
-﻿Build started 1/7/2015 4:44:19 PM.
-     1>Project "C:\src\2014\Debug-Logger\test\test.vcxproj" on node 3 (Build target(s)).
+﻿Build started 1/27/2015 10:48:02 PM.
+     1>Project "C:\src\2014\Debug-Logger\test\test.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\VS2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\Source.cpp
          Source.cpp
        Link:
          C:\VS2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\src\2014\Debug-Logger\\bin\Debug\test.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\src\2014\Debug-Logger\\bin\Debug\test.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\src\2014\Debug-Logger\\bin\Debug\test.lib" /MACHINE:X86 Debug\Source.obj
-     1>logtools.lib(logtools.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'logtools.lib(logtools.obj)' or at 'C:\src\2014\Debug-Logger\bin\Debug\vc120.pdb'; linking object as if no debug info
          test.vcxproj -> C:\src\2014\Debug-Logger\\bin\Debug\test.exe
      1>Done Building Project "C:\src\2014\Debug-Logger\test\test.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:05.96
+Time Elapsed 00:00:04.83

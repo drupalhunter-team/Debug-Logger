@@ -34,14 +34,24 @@ namespace dbg_log
 	//Forward declaration for friend statement
 	class FileLog_Mgr;
 
-	/*
-	Logger Class
-
-	
-	*/
 	template <typename OutputPolicy>
 	class Logger : public std::ostringstream
 	{
+							/*
+							Logger Class
+							log lines are streamed directly into the logger object
+							the object retains all log lines until they are sent to the Ouput policy to deal with
+
+							if thread safety is required then a copy of the original logger is made and the object's mutex is locked when the lifetime of this copy expires the mutex is unlocked
+							constructor: locks the mutex
+							destructor: unlocked the mutex
+
+							the original object is stored inside the copy as a pointer whereas for the original this member pointer is == nullptr
+							the mutex is also stored as a pointer so that when the copy or the source become locked the other cannot function
+
+							if thread safety is not required then the original object can be used directly
+							Though the macros cannot provide this functionality
+							*/
 		friend FileLog_Mgr;
 
 	public:
@@ -149,6 +159,11 @@ namespace dbg_log
 
 	class FileStream_Policy
 	{
+		/*
+		FileStream Class
+		this is a Logger Policy
+		It can be used to specify an output method for the logger
+		*/
 	public:
 		FileStream_Policy(){}
 
